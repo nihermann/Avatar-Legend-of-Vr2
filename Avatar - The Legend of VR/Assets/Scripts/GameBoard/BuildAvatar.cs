@@ -6,8 +6,6 @@ using Random = UnityEngine.Random;
 public class BuildAvatar : MonoBehaviour
 {   
     
-    private Material _eyeMaterial;
-    
     private GameObject _avatar;
     private ParticipantPreferences _participantPreferences;
     private AvatarColors _avatarColors;
@@ -25,7 +23,7 @@ public class BuildAvatar : MonoBehaviour
         SetGlasses(randomGlasses);
     }
     
-    public void Build(GameObject avatarPrefab, Material eyeMaterial, AvatarField avatarField, ParticipantPreferences participantPreferences)
+    public void Build(GameObject avatarPrefab, OptionField avatarField, ParticipantPreferences participantPreferences)
     {
         // make the avatar object and instantiate it at the position of the field
         _avatar = Instantiate(avatarPrefab, avatarField.position, avatarField.quaternion).GameObject();
@@ -35,8 +33,7 @@ public class BuildAvatar : MonoBehaviour
         _avatar.GetComponent<Avatar>().currentField = avatarField;
         
         _participantPreferences = participantPreferences;
-        _eyeMaterial = eyeMaterial; 
-    
+
         bool randomSwitch = Random.value > 0.5; 
         switch (questionnaireMatch)
         {
@@ -67,7 +64,9 @@ public class BuildAvatar : MonoBehaviour
     {
         // set skin color based on preferences
         Color eyeColor = AvatarColors.GetColorOnPreference(preferenceLevel, _participantPreferences.EyeColor, AvatarColors.Mode.EyeColor);
-        _eyeMaterial.color = eyeColor;
+        FindChild("metarig/Global/Position/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006/face/eye.L/EyesL").GetComponent<Renderer>().materials[2].color = eyeColor;
+        FindChild("metarig/Global/Position/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006/face/eye.R/EyesR").GetComponent<Renderer>().materials[2].color = eyeColor;
+
     }
     
     private bool SetHat(bool setBasedOnPreference)
@@ -166,10 +165,10 @@ public class BuildAvatar : MonoBehaviour
         switch (clothingStyleBottom)
         {
             case ClothingStyle.Casual:
-                MakeActive("pants", colorBottom);
+                MakeActive("casual_pants", colorBottom);
                 break;
             case ClothingStyle.Chique:
-                MakeActive("pants", colorBottom);
+                MakeActive("chique_pants", colorBottom);
                 break;
             case ClothingStyle.Sporty:
                 MakeActive("sporty_pants", colorBottom);
@@ -228,9 +227,9 @@ public class BuildAvatar : MonoBehaviour
         return Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f)*0.5f;
     }
     
-    private static T RandomFromList<T>(T[] List)
+    private static T RandomFromList<T>(T[] list)
     {
-        return List[Random.Range(0, List.Length)];
+        return list[Random.Range(0, list.Length)];
     }
     
     private GameObject FindChild(string childName)

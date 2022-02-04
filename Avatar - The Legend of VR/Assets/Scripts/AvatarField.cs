@@ -7,7 +7,7 @@ public class AvatarField : Field
 {
 
 
-    public int questionnareMatch = 50;
+    public LevelOfMatch questionnareMatch;
     public GameObject avatar;
 
     // Start is called before the first frame update

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 
 /// <summary>
 /// Trial information which holds the current state of the experiment in each trail.
 /// </summary>
-public class TrialInfo : IRecordable
+public class TrialInfo : ISnapshotable
 {
     /// <summary>
     /// Id of the current participant.
@@ -27,27 +27,23 @@ public class TrialInfo : IRecordable
     // todo maybe some more information on the character needed? @Michael
     
     public readonly List<CardValues> cardsPicked = new();
+    public readonly List<AvatarSelectionResponse> avatarsChosen = new();
     
-    #region IRecordable Implementation
-    public int NumberOfColumnsNeeded { get; }
-    public string[] Record()
+
+    public IEnumerable<string> Header()
     {
-        throw new NotImplementedException();
+        return SnapshotTypeDefs.CreateHeaders(
+            new(nameof(participantID), participantPreferences.GetType()),
+            new(nameof(trialNumber), trialNumber.GetType()))
+            .Concat(participantPreferences.Header())
+            .Concat(avatarsChosen.SelectMany(av => av.Header()));
     }
 
-    public string[] GetHeader()
+    public IEnumerable<string> Record()
     {
-        throw new NotImplementedException();
+        return SnapshotTypeDefs.CreateSnapshot(
+                participantID, trialNumber)
+            .Concat(participantPreferences.Record())
+            .Concat(avatarsChosen.SelectMany(av => av.Record()));
     }
-
-    public string OnRecordingExceptionCaught(Exception e)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnGetHeaderExceptionCaught(Exception e, int failedHeaderNo)
-    {
-        Debug.LogError($"Exception occured while recording: {e.Message}");
-    }
-    #endregion
 }

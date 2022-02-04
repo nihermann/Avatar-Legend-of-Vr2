@@ -35,8 +35,7 @@ public class TrialManager : MonoBehaviour
         // if not reached but cards are empty, refill hand cards
         
         // done state
-        var done = new DoneState();
-
+        var done = new RecordState(_currentTrial);
 
         // refill hand cards --()--> select card
         _stateMachine.AddTransition(refillHandCards, selectCard, () => refillHandCards.AreRefilled);

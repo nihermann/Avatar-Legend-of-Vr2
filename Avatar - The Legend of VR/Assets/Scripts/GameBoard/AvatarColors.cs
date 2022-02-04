@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -1085,15 +1086,15 @@ new (99f/255f,54f/255f,137f/255f)
         EyeColor,
         FavoriteColor,
     }
-    
-    
+
+
     /// <summary>
     ///  Iterates through the Colors in @colorsToChooseFrom and calculates the Distance to the @favoriteColor.
     /// The Color which distance is closest to the one attributed to the preferenceLevel is returned. 
     /// </summary>
     /// <param name="preferenceLevel">Level in how far the returned Color should match the favorite one</param>
     /// <param name="favoriteColor">Color which was chosen in the questionnaire</param>
-    /// <param name="colorsToChooseFrom">List of Color to return the best matching one</param>
+    /// <param name="mode"></param>
     /// <returns>Color which matches the favoriteColor to the Degree of preferenceLevel</returns>
     public static Color GetColorOnPreference(LevelOfMatch preferenceLevel, Color favoriteColor, Mode mode)
     {
@@ -1103,14 +1104,14 @@ new (99f/255f,54f/255f,137f/255f)
         float lastClosestDistance = 30;
         float wantedDistance = WantedDistance(preferenceLevel, mode);
 
-        if (mode == Mode.FavoriteColor)
-        {
-            return RgBtoCielab.ColorFromDistance(favoriteColor, wantedDistance);
-        }
+        // if (mode == Mode.FavoriteColor)
+        // {
+        //     return RgBtoCielab.ColorFromDistance(favoriteColor, wantedDistance);
+        // }
         
         foreach (var color in GetColorsFromMode(mode))
         {
-            float colorDistance = distance(RgBtoCielab.ColorDistance(favoriteColor, color), wantedDistance);
+            float colorDistance = Distance(RgBtoCielab.ColorDistance(favoriteColor, color), wantedDistance);
             if (colorDistance < lastClosestDistance)
             {
                 closestColorToPreference = color;
@@ -1120,8 +1121,9 @@ new (99f/255f,54f/255f,137f/255f)
         
         return closestColorToPreference;
     }
-    
+
     /// <param name="preferenceLevel"> preference Level you want the attributed Cielab distance from</param>
+    /// <param name="mode"></param>
     /// <returns>Cielab distances based on preference level</returns>
     private static float WantedDistance(LevelOfMatch preferenceLevel, Mode mode)
     {
@@ -1134,20 +1136,35 @@ new (99f/255f,54f/255f,137f/255f)
                 LevelOfMatch.SlightMatch => 15,
                 LevelOfMatch.BetterMatch => 7.5f,
                 LevelOfMatch.FullMatch => 0f,
+                _ => throw new ArgumentOutOfRangeException(nameof(preferenceLevel), preferenceLevel, null)
+            };
+        }
+        
+        if (mode == Mode.HairColor)
+        {
+            return preferenceLevel switch
+            {
+                LevelOfMatch.Opposite => 8,
+                LevelOfMatch.LessOpposite => 6f,
+                LevelOfMatch.SlightMatch => 5,
+                LevelOfMatch.BetterMatch => 3f,
+                LevelOfMatch.FullMatch => 0f,
+                _ => throw new ArgumentOutOfRangeException(nameof(preferenceLevel), preferenceLevel, null)
             };
         }
         
         return preferenceLevel switch
         {
-            LevelOfMatch.Opposite => 6,
-            LevelOfMatch.LessOpposite => 5,
-            LevelOfMatch.SlightMatch => 4,
-            LevelOfMatch.BetterMatch => 2.5f,
+            LevelOfMatch.Opposite => 5.5f,
+            LevelOfMatch.LessOpposite => 4.5f,
+            LevelOfMatch.SlightMatch => 3,
+            LevelOfMatch.BetterMatch => 2f,
             LevelOfMatch.FullMatch => 0,
+            _ => throw new ArgumentOutOfRangeException(nameof(preferenceLevel), preferenceLevel, null)
         };
     }
     
-    private static Color[] GetColorsFromMode(Mode mode)
+    private static IEnumerable<Color> GetColorsFromMode(Mode mode)
     {
         return mode switch
         {
@@ -1163,7 +1180,7 @@ new (99f/255f,54f/255f,137f/255f)
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <returns>distance between two floats</returns>
-    private static float distance(float x, float y)
+    private static float Distance(float x, float y)
     {
         return Mathf.Abs(x-y);
     }

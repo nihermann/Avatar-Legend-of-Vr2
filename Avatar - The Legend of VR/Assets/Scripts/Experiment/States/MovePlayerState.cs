@@ -26,7 +26,7 @@ public class MovePlayerState : IState
         _player.onGoalFieldReached.AddListener(OnGoalReached);
         _player.onAvatarSelectFieldReached.AddListener(OnAvatarSelectReached);
         
-        _player.StartCoroutine(_player.Move((int)previouslySelectedCard));
+        _player.Move((int)previouslySelectedCard);
     }
 
     private void OnMoveDone() => FinishedMovement = true;

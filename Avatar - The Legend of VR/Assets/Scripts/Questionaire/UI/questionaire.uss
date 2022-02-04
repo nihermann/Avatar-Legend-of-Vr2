@@ -1,0 +1,109 @@
+.color-pick-button {
+    border-radius: 12px;
+    border-width: 2px;
+    height: 80%;
+    width: 5%;
+    border-color: rgb(27, 27, 27);
+}
+
+.horizontal-flex {
+    flex-direction: column;
+}
+
+.question-margin {
+    margin: 4px;
+}
+
+Button {
+    color: rgb(172, 141, 133);
+    border-radius: 6px;
+    border-color: rgb(172, 141, 133);
+    background-color: rgb(38, 34, 33);
+}
+
+.unity-radio-button {
+    margin-left: 24px;
+}
+
+.unity-radio-button__text {
+    margin-left: 12px;
+}
+
+.unity-radio-button > .unity-radio-button__input:hover > .unity-radio-button__checkmark-background {
+    border-color: rgb(201, 201, 201);
+}
+
+.unity-radio-button > .unity-radio-button__input:focus > .unity-radio-button__checkmark-background {
+    border-color: rgb(95, 95, 95);
+}
+
+.unity-radio-button__checkmark-background {
+    background-color: rgb(42, 42, 42);
+}
+
+#unity-checkmark {
+    background-color: rgb(201, 201, 201);
+}
+
+.unity-label {
+    font-size: 100%;
+    color: rgb(201, 201, 201);
+}
+
+.unity-text-element {
+    font-size: 100%;
+    color: rgb(201, 201, 201);
+}
+
+#unity-text-input {
+    font-size: 100%;
+    color: rgb(201, 201, 201);
+}
+
+#unity-text-input {
+    justify-content: flex-end;
+    flex-grow: 1;
+}
+
+.unity-base-text-field__input {
+    padding: 4px;
+    padding-left: 8px;
+    background-color: rgb(81, 81, 81);
+}
+
+.unity-base-popup-field__input {
+    padding: 4px;
+    padding-left: 8px;
+    background-color: rgb(81, 81, 81);
+}
+
+.unity-base-popup-field__arrow {
+    -unity-background-image-tint-color: rgb(196, 196, 196);
+}
+
+.unity-base-dropdown__checkmark {
+    -unity-background-image-tint-color: rgb(196, 196, 196);
+}
+
+.unity-base-dropdown__container-inner {
+    background-color: rgb(81, 81, 81);
+}
+
+.unity-base-field {
+    justify-content: space-between;
+}
+
+.unity-base-field__input {
+    border-color: rgb(27, 27, 27);
+    max-width: 50%;
+    margin: 0;
+}
+
+.skin-color-button {
+}
+
+.eye-color-button {
+}
+
+.hair-color-button {
+}

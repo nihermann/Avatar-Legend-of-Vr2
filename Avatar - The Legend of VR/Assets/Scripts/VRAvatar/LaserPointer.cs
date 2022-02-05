@@ -13,6 +13,7 @@ public class LaserPointer : MonoBehaviour
     private Camera _cam;
 
     #endregion
+
     public bool LaserPointerEnabled
     {
         set

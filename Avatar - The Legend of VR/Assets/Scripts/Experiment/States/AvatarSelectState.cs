@@ -33,16 +33,23 @@ public class AvatarSelectState : IState
     {
         if (go.CompareTag("Avatar"))
         {
-            _response.levelOfMatchChosen = go.GetComponent<Avatar>().QuestionnaireMatch;
+            var chosenAvatar = go.GetComponent<Avatar>();
+            // save the match level of chosen avatar
+            _response.levelOfMatchChosen = chosenAvatar.QuestionnaireMatch;
             
+            // get both level of matches from each avatar
             var avatarField = _player.currentField as AvatarField;
-            var leftLofM = avatarField.leftOption.questionnaireMatch;
-            var rightLofM = avatarField.rightOption.questionnaireMatch;
+            var leftLofM = avatarField!.leftOption.questionnaireMatch;
+            var rightLofM = avatarField!.rightOption.questionnaireMatch;
 
-            var choseLeft = _response.levelOfMatchChosen == leftLofM;
+            // check if we matched the right or left and save the opposing avatars level of match.
+            var choseLeft = chosenAvatar.QuestionnaireMatch == leftLofM;
             _response.levelOfMatchOther = choseLeft? rightLofM : leftLofM;
+            
+            // check if we selected the same avatar as before if there is one.
+            _response.keptSameAvatar = _trialManager.companion != null && _trialManager.companion.QuestionnaireMatch == chosenAvatar.QuestionnaireMatch;
 
-            _trialManager.companion = go.GetComponent<Avatar>();
+            _trialManager.companion = chosenAvatar;
             AvatarSelected = true;
         }
     }

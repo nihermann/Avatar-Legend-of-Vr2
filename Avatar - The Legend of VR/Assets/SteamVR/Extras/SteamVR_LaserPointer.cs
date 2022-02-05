@@ -68,6 +68,7 @@ namespace Valve.VR.Extras
             Material newMaterial = new Material(Shader.Find("Unlit/Color"));
             newMaterial.SetColor("_Color", color);
             pointer.GetComponent<MeshRenderer>().material = newMaterial;
+            pointer.SetActive(isActive);
         }
 
         public virtual void OnPointerIn(PointerEventArgs e)
@@ -91,6 +92,10 @@ namespace Valve.VR.Extras
 
         private void Update()
         {
+            pointer.SetActive(active);
+
+            if (!active) return;
+            
             if (!isActive)
             {
                 isActive = true;

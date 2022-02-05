@@ -188,17 +188,20 @@ namespace VRAvatar
                 .ToArray();
         }
 
-        private void ApplyPositionsToCards(IReadOnlyList<Transform> transforms)
+        private void ApplyPositionsToCards(IReadOnlyList<Transform> cards)
         {
             var directions = GetDirectionsOnArc();
             var positions = GetPointsOnArc();
             for (var i = 0; i < directions.Length; i++)
             {
-                transforms[i].right = -directions[i];
-                transforms[i].localEulerAngles += offset;
-                transforms[i].position = positions[i];
-                transforms[i].localPosition += new Vector3(0f, -0.0002f * i, 0f);
+                // align to center
+                cards[i].right = -directions[i];
+                cards[i].rotation = Quaternion.AngleAxis(-135, cards[i].right) * cards[i].rotation;
+                
+                cards[i].position = positions[i];
+                cards[i].localPosition += new Vector3(0f, -0.0002f * i, 0f);
             }
+            
         }
 
         #endregion
@@ -208,8 +211,8 @@ namespace VRAvatar
         {
             // the center where the disc must start.
             _center = transform.position - transform.forward * (radius - height);
-            // Handles.color = Color.white;
-            // Handles.DrawWireDisc(_center, transform.up, radius);
+            Handles.color = Color.white;
+            Handles.DrawWireDisc(_center, transform.up, radius);
 
             var theta = cardSpan * 360 / (2 * Mathf.PI * radius);
 

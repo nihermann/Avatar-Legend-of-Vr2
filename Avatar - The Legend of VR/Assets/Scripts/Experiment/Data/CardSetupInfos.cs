@@ -41,6 +41,4 @@ public enum CardValues
     Eight = 8,
     Nine = 9,
     Ten = 10,
-    Twelve = 12,
-    Thirteen = 13
 }

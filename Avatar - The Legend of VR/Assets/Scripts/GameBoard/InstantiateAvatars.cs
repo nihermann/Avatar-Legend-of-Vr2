@@ -12,7 +12,6 @@ public class InstantiateAvatars : MonoBehaviour
 
     public void Instantiate(ParticipantPreferences prefs, AvatarSetupInfos currentTrialAvatarSetupInfos)
     {
-        Debug.Log(prefs);
         for (var i = 0; i < avatarFields.Length; i++)
             avatarFields[i].questionnaireMatch = currentTrialAvatarSetupInfos.MatchChoices[i];
         foreach (var avatarField in avatarFields)

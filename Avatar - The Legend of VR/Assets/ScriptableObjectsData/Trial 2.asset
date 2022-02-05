@@ -19,6 +19,6 @@ MonoBehaviour:
     thirdChoice: 4
     fourthChoice: 2
   cardSetupInfos:
-    numberOfHandCardsAtStart: 4
+    numberOfHandCardsAtStart: 3
     cardStaple:
       rndSeed: 2

@@ -1,14 +1,26 @@
 using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class MovePlayerState : IState
 {
+    private enum PlayerState
+    {
+        NotDone,
+        FinishedMovement,
+        ReachedGoalField,
+        ReachedAvatarSelection
+    }
     private readonly TrialInfo _currentTrial;
     private readonly Player _player;
     private readonly TrialManager _trialManager;
-    public bool FinishedMovement { get; private set; }
-    public bool ReachedGoalField { get; private set; }
+
+    private bool _companionExitedMove;
+    private PlayerState _movementState;
+    public bool FinishedMovement => _companionExitedMove && _movementState == PlayerState.FinishedMovement;
+    public bool ReachedGoalField => _companionExitedMove && _movementState == PlayerState.ReachedGoalField;
     
-    public bool ReachedAvatarSelection { get; private set; }
+    public bool ReachedAvatarSelection => _companionExitedMove && _movementState == PlayerState.ReachedAvatarSelection;
 
     public MovePlayerState(Player player, TrialManager trialManager, TrialInfo currentTrial)
     {
@@ -19,7 +31,8 @@ public class MovePlayerState : IState
 
     public void OnStateEnter()
     {
-        FinishedMovement = ReachedGoalField = ReachedAvatarSelection = false;
+        _companionExitedMove = false;
+        _movementState = PlayerState.NotDone;
         var previouslySelectedCard = _currentTrial.cardsPicked.Last();
         
         _player.onMoveExit.AddListener(OnMoveDone);
@@ -27,22 +40,49 @@ public class MovePlayerState : IState
         _player.onAvatarSelectFieldReached.AddListener(OnAvatarSelectReached);
         
         _player.Move((int)previouslySelectedCard);
+        if (_trialManager.companion != null)
+        {
+            _player.StartCoroutine(_trialManager.companion.Move((int)previouslySelectedCard, _player));
+            _trialManager.companion.onMoveExit.AddListener(OnCompanionMoveDone);
+        }
+        else _companionExitedMove = true;
     }
 
-    private void OnMoveDone() => FinishedMovement = true;
+    private void OnCompanionMoveDone() => _companionExitedMove = true;
 
-    private void OnGoalReached() => ReachedGoalField = true;
+    private void OnMoveDone() => _movementState = PlayerState.FinishedMovement;
 
-    private void OnAvatarSelectReached() => ReachedAvatarSelection = true;
-    
-    public void Tick() { }
+    private void OnGoalReached() => _movementState = PlayerState.ReachedGoalField;
+
+    private void OnAvatarSelectReached() => _movementState = PlayerState.ReachedAvatarSelection;
+
+    private bool _c;
+    private PlayerState _s;
+    public void Tick()
+    {
+        if (_s != _movementState)
+        {
+            _s = _movementState;
+            Debug.Log(_s);
+        }
+
+        if (_c != _companionExitedMove)
+        {
+            _c = _companionExitedMove;
+            Debug.Log($"Comp Move Done: {_c}");
+        }
+    }
 
     public void OnStateExit()
     {
         _player.onMoveExit.RemoveListener(OnMoveDone);
         _player.onGoalFieldReached.RemoveListener(OnGoalReached);
         _player.onAvatarSelectFieldReached.RemoveListener(OnAvatarSelectReached);
-        
+        if (_trialManager.companion != null)
+        {
+            _trialManager.companion.onMoveExit.RemoveListener(OnCompanionMoveDone);
+        }
+
         _player.StopAllCoroutines();
     }
     

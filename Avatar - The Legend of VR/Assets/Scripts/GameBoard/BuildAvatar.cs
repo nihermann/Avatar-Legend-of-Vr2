@@ -24,14 +24,14 @@ public class BuildAvatar
         SetGlasses(randomGlasses);
     }
     
-    public void Build(GameObject avatarPrefab, OptionField avatarField, ParticipantPreferences participantPreferences)
+    public void Build(GameObject avatarPrefab, OptionField optionField, ParticipantPreferences participantPreferences)
     {
         // make the avatar object and instantiate it at the position of the field
-        _avatar = Object.Instantiate(avatarPrefab, avatarField.position, avatarField.quaternion).GameObject();
-        LevelOfMatch questionnaireMatch = avatarField.questionnaireMatch;
-        avatarField.avatar = _avatar;
+        _avatar = Object.Instantiate(avatarPrefab, optionField.position, optionField.quaternion).GameObject();
+        LevelOfMatch questionnaireMatch = optionField.questionnaireMatch;
+        optionField.avatar = _avatar;
         _avatar.GetComponent<Avatar>().QuestionnaireMatch = questionnaireMatch;
-        _avatar.GetComponent<Avatar>().currentField = avatarField;
+        _avatar.GetComponent<Avatar>().startingField = optionField;
         
         _participantPreferences = participantPreferences;
 

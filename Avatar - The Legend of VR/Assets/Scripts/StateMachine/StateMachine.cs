@@ -30,10 +30,11 @@ public class StateMachine
         if (transition != null) SetState(transition.To);
     }
 
+    private int _i;
     public void SetState(IState state)
     {
         if (state == _currentState) return;
-        Debug.Log("Set state to " + state.GetType());
+        Debug.Log($"{{{_i++:00}}}: Set state to " + state.GetType());
         _currentState?.OnStateExit();
         
         state.OnStateEnter();

@@ -43,7 +43,7 @@ public class TrialManager : MonoBehaviour
         _stateMachine.AddTransition(selectCard, movePlayer, () => selectCard.CardSelected);
         
         
-        // move vrPlayer --(if enough handcards)--> select card
+        // move vrPlayer --(if enough hand cards)--> select card
         _stateMachine.AddTransition(movePlayer, selectCard, () => movePlayer.FinishedMovement && vrPlayer.leftHand.handCards.NumberOfCards > 0);
         // move vrPlayer --(if avatar selection reached)--> avatarSelection
         _stateMachine.AddTransition(movePlayer, avatarSelection, () => movePlayer.ReachedAvatarSelection);
@@ -52,10 +52,10 @@ public class TrialManager : MonoBehaviour
         // move vrPlayer --(if goal reached)--> save trial
         _stateMachine.AddTransition(movePlayer, done, () => movePlayer.ReachedGoalField);
         
-        // avatar selection --(if enough handcards)--> select card
-        _stateMachine.AddTransition(avatarSelection, selectCard, () => vrPlayer.leftHand.handCards.NumberOfCards > 0);
-        // avatar selection --(no more handcards)--> refill hand cards
-        _stateMachine.AddTransition(avatarSelection, refillHandCards, () => vrPlayer.leftHand.handCards.NumberOfCards <= 0);
+        // avatar selection --(if enough hand cards)--> select card
+        _stateMachine.AddTransition(avatarSelection, selectCard, () => avatarSelection.AvatarSelected && vrPlayer.leftHand.handCards.NumberOfCards > 0);
+        // avatar selection --(no more hand cards)--> refill hand cards
+        _stateMachine.AddTransition(avatarSelection, refillHandCards, () => avatarSelection.AvatarSelected && vrPlayer.leftHand.handCards.NumberOfCards <= 0);
         
         
         // Start state

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
-using UnityEngine.UIElements;
 
+[RequireComponent(typeof(PlayerSFX))]
 public class Player : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -23,12 +22,13 @@ public class Player : MonoBehaviour
     public UnityEvent onAvatarSelectFieldReached;
     public UnityEvent onMoveExit;
 
-    [SerializeField] private SFX Sfx;
+    private PlayerSFX _playerSfx;
 
 
-    void Start()
+    private void Start()
     {
         currentField = startingField;
+        _playerSfx = GetComponent<PlayerSFX>();
     }
 
    public List<Field> FindPath(int steps, Field pathStartingField){
@@ -84,8 +84,8 @@ public class Player : MonoBehaviour
 
         if (currentField.CompareTag("GoalField"))
         {
-            Sfx.PlayGoal();
-            Sfx.StopBackGround();
+            _playerSfx.PlayGoal();
+            _playerSfx.StopBackGround();
             onGoalFieldReached?.Invoke();
         }
         else onMoveExit?.Invoke();
@@ -93,7 +93,7 @@ public class Player : MonoBehaviour
 
     private void Teleport(Field field)
     {
-        Sfx.PlayTeleport();
+        _playerSfx.PlayTeleport();
         // the position of the player to the field position plus its height
         var fieldTransform = field.transform;
         transform.position = new Vector3(fieldTransform.position.x, transform.position.y, fieldTransform.position.z);

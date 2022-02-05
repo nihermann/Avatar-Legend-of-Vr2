@@ -28,6 +28,8 @@ namespace VRAvatar
         
         #endregion
 
+        [SerializeField] private AudioSource CardFlip;
+
         [SerializeField] private GameObject[] cardPrefabs;
         private readonly List<Card> _handCards = new();
         private int _selectedCardIdx = -1;
@@ -38,7 +40,11 @@ namespace VRAvatar
 
         public UnityEvent<Card> onCardSelectionChanged;
 
-        private void Start() => onCardSelectionChanged.AddListener(HighlightCardOnSelection);
+        private void Start() {
+            onCardSelectionChanged.AddListener(HighlightCardOnSelection);
+            onCardSelectionChanged.AddListener(MakeCardSwitchSound);
+            
+        }
        
 
         /// <summary>
@@ -138,6 +144,11 @@ namespace VRAvatar
             foreach (var handCard in _handCards)
                 handCard.Dim();
             if (card != null) card.Highlight();
+        }
+        
+        private void MakeCardSwitchSound(Card arg0)
+        {
+            CardFlip.Play();
         }
 
         #endregion

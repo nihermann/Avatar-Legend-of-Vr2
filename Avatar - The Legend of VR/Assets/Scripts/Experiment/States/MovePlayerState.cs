@@ -1,4 +1,6 @@
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class MovePlayerState : IState
 {
@@ -7,6 +9,8 @@ public class MovePlayerState : IState
     private readonly TrialManager _trialManager;
     public bool FinishedMovement { get; private set; }
     public bool ReachedGoalField { get; private set; }
+
+    public AudioSource GoalField;
     
     public bool ReachedAvatarSelection { get; private set; }
 

@@ -22,6 +22,12 @@ public class Player : MonoBehaviour
     public UnityEvent onAvatarSelectFieldReached;
     public UnityEvent onMoveExit;
 
+    [SerializeField]
+    private AudioSource TeleportSound;
+    
+    [SerializeField]
+    private AudioSource GoalSound;
+
     void Start()
     {
         currentField = startingField;
@@ -74,6 +80,7 @@ public class Player : MonoBehaviour
 
             if (currentField is AvatarField )
             {
+                TeleportSound.Play();
                 Teleport(currentField);
                 onAvatarSelectFieldReached?.Invoke();
                 // if (currentPath.Count > 1 && _companion._animator)
@@ -86,10 +93,13 @@ public class Player : MonoBehaviour
             currentPath.RemoveAt(0);
         }
 
-        
+        TeleportSound.Play();
         Teleport(currentField);
+        
+        
         if (currentField.CompareTag("GoalField"))
         {
+            GoalSound.Play();
             onGoalFieldReached.Invoke();
         }
         if (_companion != null)

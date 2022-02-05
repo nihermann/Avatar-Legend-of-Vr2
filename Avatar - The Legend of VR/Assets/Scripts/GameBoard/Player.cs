@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
@@ -55,7 +57,14 @@ public class Player : MonoBehaviour
         if(isMoving)
             return;
 
-        currentPath = FindPath(steps, currentField);
+        try
+        {
+            currentPath = FindPath(steps, currentField);
+        }
+        catch (NullReferenceException e)
+        {
+            Debug.Log($"No next in {currentPath.Last().name}");
+        }
 
         // move from each field in the path to the next one
         while(currentPath.Count > 0){

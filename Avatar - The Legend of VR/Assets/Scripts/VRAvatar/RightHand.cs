@@ -7,6 +7,5 @@ public class RightHand : MonoBehaviour
     private void Start()
     {
         laserPointer = GetComponentInChildren<LaserPointer>();
-        laserPointer.onPointerClick.AddListener(go => Debug.Log(go.name));
     }
 }

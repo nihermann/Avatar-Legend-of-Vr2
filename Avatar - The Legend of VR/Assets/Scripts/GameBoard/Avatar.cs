@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -22,9 +24,14 @@ public class Avatar : Player
 
         isMoving = true; 
 
-        // if the path is not already specified calculate it
-        if(currentPath.Count == 0)
+        try
+        {
             currentPath = FindPath(steps, currentField);
+        }
+        catch (NullReferenceException)
+        {
+            Debug.Log($"No next in {currentPath.Last().name}");
+        }
         
         if (_animator) 
             _animator.SetBool("isWalking", true);

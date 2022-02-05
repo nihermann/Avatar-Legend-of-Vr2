@@ -28,6 +28,10 @@ public class Player : MonoBehaviour
     private void Start()
     {
         currentField = startingField;
+        var transform1 = startingField.transform;
+        var position = transform1.position;
+        this.transform.position = new Vector3(position.x, this.transform.position.y,
+            position.z);
         _playerSfx = GetComponent<PlayerSFX>();
     }
 

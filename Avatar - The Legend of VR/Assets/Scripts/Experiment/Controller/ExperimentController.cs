@@ -8,15 +8,18 @@ public class ExperimentController : MonoBehaviour
 
     private const string StartScene = "StartScene";
     private const string Questionnaire = "Questionnaire";
-    private const string Dog = "DOG";
+    private const string Dog1 = "DOG 1";
+    private const string Dog3 = "DOG 3";
     private const string End = "EndScene";
     private const string Debug = "VR Grab";
     
     private static readonly Dictionary<string, string> SceneTransitions = new()
     {
         {StartScene, Questionnaire},
-        {Questionnaire, Dog},
-        {Dog, Dog},
+        {Questionnaire, Dog3},
+        {Dog3, Dog1},
+        {Dog1, Dog1}
+        
     };
 
     [SerializeField] private TrialSetupScriptableObject[] trialSetups;
@@ -45,7 +48,7 @@ public class ExperimentController : MonoBehaviour
         _currentTrial++;
         if (_currentTrial == trialSetups.Length)
         {
-            SceneTransitions[Dog] = End;
+            SceneTransitions[Dog1] = End;
             TransitionToNextScene();
             return null;
         }

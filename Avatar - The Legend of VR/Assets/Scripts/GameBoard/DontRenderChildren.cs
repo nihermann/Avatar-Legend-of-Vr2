@@ -25,7 +25,11 @@ public class DontRenderChildren : MonoBehaviour
 
         if (checkNexts)
         {
-            CheckNexts(transform.GetChild(0).GetComponent<Field>());
+            foreach (var field in transform.GetComponentsInChildren<Field>())
+            {
+                CheckNexts(field);
+            }
+            // CheckNexts(transform.GetChild(0).GetComponent<Field>());
             checkNexts = false;
         }
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 public class Avatar : Player
 {
@@ -53,7 +54,10 @@ public class Avatar : Player
 
             currentField = nextFieldInPath;
 
-            if (currentField is AvatarField) break;
+            if (currentField is OptionField)
+            {
+                break;
+            };
         }
 
         while (LookToPlayer(participant))
@@ -64,6 +68,10 @@ public class Avatar : Player
             _animator.SetBool("isWalking", false);
         currentPath = new();
         isMoving = false;
+
+        if (currentField is OptionField)
+            this.transform.rotation = currentField.transform.rotation;
+            this._animator.SetFloat("Blend", Random.Range(0.5f, 6.0f) );
         onMoveExit?.Invoke();
     }
 

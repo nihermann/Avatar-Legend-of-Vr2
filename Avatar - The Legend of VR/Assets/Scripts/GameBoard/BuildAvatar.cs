@@ -30,6 +30,7 @@ public class BuildAvatar
         _avatar = Object.Instantiate(avatarPrefab, optionField.position, optionField.quaternion).GameObject();
         LevelOfMatch questionnaireMatch = optionField.questionnaireMatch;
         optionField.avatar = _avatar;
+        _avatar.GetComponent<Animator>().SetFloat("Blend", Random.Range(0.5f,5.0f));
         _avatar.GetComponent<Avatar>().QuestionnaireMatch = questionnaireMatch;
         _avatar.GetComponent<Avatar>().startingField = optionField;
         

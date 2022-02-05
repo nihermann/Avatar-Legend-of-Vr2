@@ -12,8 +12,14 @@ EditorBuildSettings:
     path: Assets/Scenes/Questionnaire.unity
     guid: b86a8f8bb371d994d9c9dd77cccebecf
   - enabled: 1
-    path: Assets/Scenes/DOG.unity
+    path: Assets/Scenes/DOG 1.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/DOG 2.unity
+    guid: 8311b9c8aba16ca4e9b702bf54ae5086
+  - enabled: 1
+    path: Assets/Scenes/DOG 3.unity
+    guid: 26ed993bdcd937944bb1ead0cf06a24c
   - enabled: 1
     path: Assets/Scenes/Test/VR Grab.unity
     guid: d9592fda7e76f674dafc9c5a71d2b25b

@@ -7,11 +7,11 @@ using UnityEngine.UIElements;
 public class Player : MonoBehaviour
 {
     // Start is called before the first frame update
-    public bool isMoving; 
+    public bool isMoving;
 
     public Field startingField;
 
-    public Field currentField; 
+    public Field currentField;
 
     public List<Field> currentPath;
 
@@ -21,13 +21,16 @@ public class Player : MonoBehaviour
     public UnityEvent onAvatarSelectFieldReached;
     public UnityEvent onMoveExit;
 
+    [SerializeField] private SFX Sfx;
+
+
     void Start()
     {
         currentField = startingField;
     }
 
    public List<Field> FindPath(int steps, Field pathStartingField){
-        List<Field> path = new List<Field>(); 
+        List<Field> path = new List<Field>();
 
         // get the path starting with the Field the piece is currently on
         Field currentFieldInPath = pathStartingField;
@@ -37,7 +40,7 @@ public class Player : MonoBehaviour
             // for each step find the corresponding field and add to the path list
             if (currentFieldInPath.CompareTag("GoalField"))
                 return path;
-            
+
             currentFieldInPath = currentFieldInPath.nextField;
             path.Add(currentFieldInPath);
         }
@@ -45,13 +48,13 @@ public class Player : MonoBehaviour
         // return the path aka the list with all fields that are going to be visited
         return path;
     }
-   
+
 
     public void Move(int steps)
     {
         if(isMoving)
-            return; 
-        
+            return;
+
         currentPath = FindPath(steps, currentField);
 
         // move from each field in the path to the next one
@@ -64,25 +67,30 @@ public class Player : MonoBehaviour
                 Teleport(currentField);
                 onAvatarSelectFieldReached?.Invoke();
                 return;
-            } 
-            
+            }
+
         }
-        
         Teleport(currentField);
-        
-        if (currentField.CompareTag("GoalField")) onGoalFieldReached?.Invoke();
+
+
+        if (currentField.CompareTag("GoalField"))
+        {
+            Sfx.PlayGoal();
+            Sfx.StopBackGround();
+            onGoalFieldReached?.Invoke();
+        }
         else onMoveExit?.Invoke();
     }
 
     private void Teleport(Field field)
     {
-        // the position of the player to the field position plus its height 
+        Sfx.PlayTeleport();
+        // the position of the player to the field position plus its height
         var fieldTransform = field.transform;
         transform.position = new Vector3(fieldTransform.position.x, transform.position.y, fieldTransform.position.z);
-        
+
         // set the player orienetation to the rotation of the player to keep path direction
         transform.rotation = fieldTransform.rotation;
     }
 
 }
-

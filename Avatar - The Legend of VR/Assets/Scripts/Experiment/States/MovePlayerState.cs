@@ -1,6 +1,8 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class MovePlayerState : IState
 {
@@ -19,7 +21,7 @@ public class MovePlayerState : IState
     private PlayerState _movementState;
     public bool FinishedMovement => _companionExitedMove && _movementState == PlayerState.FinishedMovement;
     public bool ReachedGoalField => _companionExitedMove && _movementState == PlayerState.ReachedGoalField;
-    
+
     public bool ReachedAvatarSelection => _companionExitedMove && _movementState == PlayerState.ReachedAvatarSelection;
 
     public MovePlayerState(Player player, TrialManager trialManager, TrialInfo currentTrial)
@@ -34,11 +36,11 @@ public class MovePlayerState : IState
         _companionExitedMove = false;
         _movementState = PlayerState.NotDone;
         var previouslySelectedCard = _currentTrial.cardsPicked.Last();
-        
+
         _player.onMoveExit.AddListener(OnMoveDone);
         _player.onGoalFieldReached.AddListener(OnGoalReached);
         _player.onAvatarSelectFieldReached.AddListener(OnAvatarSelectReached);
-        
+
         _player.Move((int)previouslySelectedCard);
         if (_trialManager.companion != null)
         {
@@ -85,6 +87,6 @@ public class MovePlayerState : IState
 
         _player.StopAllCoroutines();
     }
-    
-    
+
+
 }

@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
-public struct ParticipantPreferences
+public struct ParticipantPreferences : ISnapshotable
 {
     public int Age { get; set; }
 
@@ -17,8 +18,35 @@ public struct ParticipantPreferences
     public Opinion LikesGlasses { get; set; }
     
     public Opinion LikesHats { get; set; }
+    
+    public IEnumerable<string> Record()
+    {
+        return SnapshotTypeDefs.CreateSnapshot(
+            Age,
+            SkinColor,
+            HairColor,
+            HairLength,
+            EyeColor,
+            ClothingStyle,
+            FavouriteColor,
+            LikesGlasses,
+            LikesHats);
+    }
 
-
+    public IEnumerable<string> Header()
+    {
+        return SnapshotTypeDefs.CreateHeaders(
+            new(nameof(Age), Age.GetType()),
+            new(nameof(SkinColor), SkinColor.GetType()),
+            new(nameof(HairColor), HairColor.GetType()),
+            new(nameof(HairLength), HairLength.GetType()),
+            new(nameof(EyeColor), EyeColor.GetType()),
+            new(nameof(ClothingStyle), ClothingStyle.GetType()),
+            new(nameof(FavouriteColor), FavouriteColor.GetType()),
+            new(nameof(LikesGlasses), LikesGlasses.GetType()),
+            new(nameof(LikesHats), LikesHats.GetType())
+        );
+    }
 }
 
 

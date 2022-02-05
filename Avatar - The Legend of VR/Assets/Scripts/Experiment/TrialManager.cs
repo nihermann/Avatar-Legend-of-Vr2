@@ -7,7 +7,7 @@ public class TrialManager : MonoBehaviour
     
     [SerializeField] private VRPlayer vrPlayer;
     [SerializeField] private Player player;
-    public Player companion;
+    public Avatar companion;
     
     private TrialInfo _currentTrial;
 

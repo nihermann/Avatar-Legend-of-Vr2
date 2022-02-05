@@ -1,9 +1,10 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
-public class BuildAvatar : MonoBehaviour
+public class BuildAvatar
 {   
     
     private GameObject _avatar;
@@ -26,7 +27,7 @@ public class BuildAvatar : MonoBehaviour
     public void Build(GameObject avatarPrefab, OptionField avatarField, ParticipantPreferences participantPreferences)
     {
         // make the avatar object and instantiate it at the position of the field
-        _avatar = Instantiate(avatarPrefab, avatarField.position, avatarField.quaternion).GameObject();
+        _avatar = Object.Instantiate(avatarPrefab, avatarField.position, avatarField.quaternion).GameObject();
         LevelOfMatch questionnaireMatch = avatarField.questionnaireMatch;
         avatarField.avatar = _avatar;
         _avatar.GetComponent<Avatar>().QuestionnaireMatch = questionnaireMatch;

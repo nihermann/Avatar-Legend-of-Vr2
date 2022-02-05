@@ -35,14 +35,14 @@ public class AvatarSelectState : IState
         {
             _response.levelOfMatchChosen = go.GetComponent<Avatar>().QuestionnaireMatch;
             
-            var avatarField = _player.currentField;
-            var leftLofM = avatarField.leftOption.questionnareMatch;
-            var rightLofM = avatarField.rightOption.questionnareMatch;
+            var avatarField = _player.currentField as AvatarField;
+            var leftLofM = avatarField.leftOption.questionnaireMatch;
+            var rightLofM = avatarField.rightOption.questionnaireMatch;
 
             var choseLeft = _response.levelOfMatchChosen == leftLofM;
             _response.levelOfMatchOther = choseLeft? rightLofM : leftLofM;
 
-            _trialManager.companion = go.GetComponent<Player>();
+            _trialManager.companion = go.GetComponent<Avatar>();
             AvatarSelected = true;
         }
     }

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
@@ -20,8 +22,7 @@ public class Player : MonoBehaviour
     public UnityEvent onAvatarSelectFieldReached;
     public UnityEvent onMoveExit;
 
-
-   void Start()
+    void Start()
     {
         currentField = startingField;
     }
@@ -38,6 +39,12 @@ public class Player : MonoBehaviour
         for (int i = 0; i < steps; i++)
         {
             // for each step find the corresponding field and add to the path list
+            if (currentFieldInPath.CompareTag("GoalField"))
+            {
+                this.currentPath = path;
+                return path;
+            }
+            
             nextField = currentFieldInPath.nextField;
             path.Add(nextField);
             currentFieldInPath = nextField;
@@ -67,7 +74,7 @@ public class Player : MonoBehaviour
 
             if (currentField is AvatarField )
             {
-                transform.position = currentField.position;
+                Teleport(currentField);
                 onAvatarSelectFieldReached?.Invoke();
                 // if (currentPath.Count > 1 && _companion._animator)
                 // {
@@ -79,7 +86,12 @@ public class Player : MonoBehaviour
             currentPath.RemoveAt(0);
         }
 
-        transform.position = currentField.position;
+        
+        Teleport(currentField);
+        if (currentField.CompareTag("GoalField"))
+        {
+            onGoalFieldReached.Invoke();
+        }
         if (_companion != null)
         {
             StartCoroutine(_companion.Move(steps));
@@ -88,4 +100,15 @@ public class Player : MonoBehaviour
         currentPath = null;
     }
 
+    private void Teleport(Field field)
+    {
+        // the position of the player to the field position plus its height 
+        var fieldTransform = field.transform;
+        transform.position = new Vector3(fieldTransform.position.x, transform.position.y, fieldTransform.position.z);
+        
+        // set the player orienetation to the rotation of the player to keep path direction
+        transform.rotation = fieldTransform.rotation;
+    }
+
 }
+

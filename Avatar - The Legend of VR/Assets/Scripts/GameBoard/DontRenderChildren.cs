@@ -3,13 +3,12 @@
 [ExecuteAlways]
 public class DontRenderChildren : MonoBehaviour
 {
-    [Header("Settings")][SerializeField] private bool isAvatarStationParent;
-    
     [Header("Should the children be rendered?")][SerializeField] private bool renderChildren;
     private bool _childrenActive;
 
     [Header("Check if all nexts are setup correctly")][SerializeField] private bool checkNexts;
-    
+    [Header("Check if gaol is reachable from every AvatarField")][SerializeField] private bool checkAvatarFields;
+
     private void Start()
     {
         _childrenActive = transform.GetComponentInChildren<Renderer>().enabled;
@@ -26,11 +25,17 @@ public class DontRenderChildren : MonoBehaviour
 
         if (checkNexts)
         {
-            foreach (var child in transform.GetComponentsInChildren<Field>())
-            {
+            CheckNexts(transform.GetChild(0).GetComponent<Field>());
+            checkNexts = false;
+        }
+
+        if (checkAvatarFields)
+        {
+            var avFields = transform.GetComponentsInChildren<AvatarField>();
+            if(avFields.Length == 0) Debug.Log("No avatar field as child! Good to go! :)");
+            foreach (var child in avFields)
                 CheckNexts(child);
-                if (!isAvatarStationParent) return;
-            }
+            checkAvatarFields = false;
         }
     }
 

@@ -1,0 +1,16 @@
+{
+  "source": "Unity",
+  "applications": [
+    {
+      "app_key": "application.generated.unity.avatarthelegendofvr.exe",
+      "launch_type": "url",
+      "url": "steam://launch/",
+      "action_manifest_path": "C:\\Users\\experiment\\Documents\\Avatar-Legend-of-Vr2\\Avatar - The Legend of VR\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "strings": {
+        "en_us": {
+          "name": "Avatar - The Legend of VR [Testing]"
+        }
+      }
+    }
+  ]
+}

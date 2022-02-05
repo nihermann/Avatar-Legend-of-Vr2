@@ -15,7 +15,7 @@ public class ExperimentController : MonoBehaviour
     private static readonly Dictionary<string, string> SceneTransitions = new()
     {
         {StartScene, Questionnaire},
-        {Questionnaire, Debug},
+        {Questionnaire, Dog},
         {Dog, Dog},
     };
 

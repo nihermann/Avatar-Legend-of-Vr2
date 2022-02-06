@@ -12,7 +12,7 @@ public class ExperimentController : MonoBehaviour
     private const string Dog1 = "DOG 1";
     private const string Dog2 = "DOG 2";
     private const string Dog3 = "DOG 3", Dog4 = "DOG 4", Dog5 = "DOG 5";
-    private const string End = "EndScene";
+    private const string End = "DOG 6";
     private const string Debug = "VR Grab";
     
     private static readonly Dictionary<string, string> SceneTransitions = new()

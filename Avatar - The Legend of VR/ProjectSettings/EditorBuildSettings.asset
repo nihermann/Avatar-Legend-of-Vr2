@@ -21,6 +21,12 @@ EditorBuildSettings:
     path: Assets/Scenes/DOG 3.unity
     guid: 26ed993bdcd937944bb1ead0cf06a24c
   - enabled: 1
+    path: Assets/Scenes/DOG 4.unity
+    guid: 77998043c1673654ab182d84303d7ddf
+  - enabled: 1
+    path: Assets/Scenes/DOG 5.unity
+    guid: 3497969f0ae485946b6e9993adc37ed3
+  - enabled: 1
     path: Assets/Scenes/Test/VR Grab.unity
     guid: d9592fda7e76f674dafc9c5a71d2b25b
   - enabled: 1

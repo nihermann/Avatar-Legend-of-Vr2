@@ -7,7 +7,7 @@ public class DontRenderChildren : MonoBehaviour
     private bool _childrenActive;
 
     [Header("Check if all nexts are setup correctly")][SerializeField] private bool checkNexts;
-    [Header("Check if gaol is reachable from every AvatarField")][SerializeField] private bool checkAvatarFields;
+    [Header("Check if gaol is reachable from every OptionField")][SerializeField] private bool checkOptionFields;
 
     private void Start()
     {
@@ -29,17 +29,16 @@ public class DontRenderChildren : MonoBehaviour
             {
                 CheckNexts(field);
             }
-            // CheckNexts(transform.GetChild(0).GetComponent<Field>());
             checkNexts = false;
         }
 
-        if (checkAvatarFields)
+        if (checkOptionFields)
         {
-            var avFields = transform.GetComponentsInChildren<AvatarField>();
-            if(avFields.Length == 0) Debug.Log("No avatar field as child! Good to go! :)");
+            var avFields = transform.GetComponentsInChildren<OptionField>();
+            if(avFields.Length == 0) Debug.Log("No option field as child! Good to go! :)");
             foreach (var child in avFields)
                 CheckNexts(child);
-            checkAvatarFields = false;
+            checkOptionFields = false;
         }
     }
 

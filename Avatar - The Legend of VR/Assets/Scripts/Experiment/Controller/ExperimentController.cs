@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,6 +10,7 @@ public class ExperimentController : MonoBehaviour
     private const string StartScene = "StartScene";
     private const string Questionnaire = "Questionnaire";
     private const string Dog1 = "DOG 1";
+    private const string Dog2 = "DOG 2";
     private const string Dog3 = "DOG 3";
     private const string End = "EndScene";
     private const string Debug = "VR Grab";
@@ -16,10 +18,10 @@ public class ExperimentController : MonoBehaviour
     private static readonly Dictionary<string, string> SceneTransitions = new()
     {
         {StartScene, Questionnaire},
-        {Questionnaire, Dog3},
+        {Questionnaire, Dog1},
+        {Dog1, Dog2},
+        {Dog2, Dog3},
         {Dog3, Dog1},
-        {Dog1, Dog1}
-        
     };
 
     [SerializeField] private TrialSetupScriptableObject[] trialSetups;
@@ -36,7 +38,12 @@ public class ExperimentController : MonoBehaviour
         else Destroy(gameObject);
         DontDestroyOnLoad(this);
     }
-    
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.X)) TransitionToNextScene();
+    }
+
     public static void TransitionToNextScene()
     {
         var nextScene = SceneTransitions[SceneManager.GetActiveScene().name];
@@ -46,11 +53,11 @@ public class ExperimentController : MonoBehaviour
     public TrialInfo InitNewTrial()
     {
         _currentTrial++;
-        if (_currentTrial == trialSetups.Length)
+        if (_currentTrial == trialSetups.Length - 1)
         {
             SceneTransitions[Dog1] = End;
-            TransitionToNextScene();
-            return null;
+            SceneTransitions[Dog2] = End;
+            SceneTransitions[Dog3] = End;
         }
         return new TrialInfo
         {

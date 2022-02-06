@@ -33,6 +33,8 @@ public class MovePlayerState : IState
 
     public void OnStateEnter()
     {
+        _c = false;
+        _s = PlayerState.NotDone;
         _companionExitedMove = false;
         _movementState = PlayerState.NotDone;
         var previouslySelectedCard = _currentTrial.cardsPicked.Last();
@@ -60,18 +62,19 @@ public class MovePlayerState : IState
 
     private bool _c;
     private PlayerState _s;
+    private int _i;
     public void Tick()
     {
         if (_s != _movementState)
         {
             _s = _movementState;
-            Debug.Log(_s);
+            Debug.Log($"MOVE: {{{_i++:00}}}: {_s}");
         }
 
-        if (_c != _companionExitedMove)
+        if (_companionExitedMove)
         {
             _c = _companionExitedMove;
-            Debug.Log($"Comp Move Done: {_c}");
+            Debug.Log($"MOVE: {{{_i++:00}}}Comp Move Done: {_c}");
         }
     }
 

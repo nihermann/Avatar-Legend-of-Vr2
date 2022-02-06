@@ -196,7 +196,9 @@ namespace VRAvatar
             {
                 // align to center
                 cards[i].right = -directions[i];
-                cards[i].rotation = Quaternion.AngleAxis(-135, cards[i].right) * cards[i].rotation;
+                cards[i].localEulerAngles += offset;
+                cards[i].position = positions[i];
+                cards[i].localPosition += new Vector3(0f, -0.0002f * i, 0f);
                 
                 cards[i].position = positions[i];
                 cards[i].localPosition += new Vector3(0f, -0.0002f * i, 0f);
@@ -211,8 +213,8 @@ namespace VRAvatar
         {
             // the center where the disc must start.
             _center = transform.position - transform.forward * (radius - height);
-            Handles.color = Color.white;
-            Handles.DrawWireDisc(_center, transform.up, radius);
+            // Handles.color = Color.white;
+            // Handles.DrawWireDisc(_center, transform.up, radius);
 
             var theta = cardSpan * 360 / (2 * Mathf.PI * radius);
 

@@ -20,11 +20,13 @@ public class Avatar : Player
     }
     
     public IEnumerator Move(int steps, Player participant){
+
+        if (currentField.CompareTag("GoalField"))
+        {
+            onMoveExit?.Invoke();
+            yield break;
+        }
         
-        if(isMoving) yield break; 
-
-        isMoving = true; 
-
         try
         {
             currentPath = FindPath(steps, currentField);
@@ -54,24 +56,27 @@ public class Avatar : Player
 
             currentField = nextFieldInPath;
 
-            if (currentField is OptionField)
+            if (currentField is OptionField opt)
             {
+                opt.avatar = gameObject;
+                opt.questionnaireMatch = QuestionnaireMatch;
                 break;
-            };
+            }
         }
 
-        while (LookToPlayer(participant))
-            yield return null;
+        // while (LookToPlayer(participant))
+        //     yield return null;
         
         // the player finished his path thus it's not longer moving
         if(_animator != null)
             _animator.SetBool("isWalking", false);
         currentPath = new();
-        isMoving = false;
 
-        if (currentField is OptionField)
-            this.transform.rotation = currentField.transform.rotation;
-            this._animator.SetFloat("Blend", Random.Range(0.5f, 6.0f) );
+        // if (currentField is OptionField)
+        transform.LookAt(participant.transform);
+        transform.localEulerAngles = new(0f, transform.localEulerAngles.y, 0f); 
+        // this.transform.rotation = currentField.transform.rotation;
+        this._animator.SetFloat("Blend", Random.Range(0.5f, 6.0f));
         onMoveExit?.Invoke();
     }
 

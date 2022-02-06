@@ -36,14 +36,16 @@ public class TrialInfo : ISnapshotable
             new(nameof(participantID), participantPreferences.GetType()),
             new(nameof(trialNumber), trialNumber.GetType()))
             .Concat(participantPreferences.Header())
-            .Concat(avatarsChosen.SelectMany(av => av.Header()));
+            .Concat(avatarsChosen[0].Header());
     }
 
-    public IEnumerable<string> Record()
+    public IEnumerable<IEnumerable<string>> Record()
     {
-        return SnapshotTypeDefs.CreateSnapshot(
-                participantID, trialNumber)
-            .Concat(participantPreferences.Record())
-            .Concat(avatarsChosen.SelectMany(av => av.Record()));
+        foreach(var av in avatarsChosen)
+        {
+            yield return SnapshotTypeDefs.CreateSnapshot(participantID, trialNumber)
+                .Concat(participantPreferences.Record())
+                .Concat(av.Record());
+        }
     }
 }

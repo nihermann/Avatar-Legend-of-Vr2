@@ -8,6 +8,7 @@ public class AvatarSelectState : IState
     private readonly Player _player;
     private readonly TrialManager _trialManager;
     private readonly TrialInfo _trialInfo;
+    private readonly Transform _cam;
 
     private AvatarSelectionResponse _response;
     
@@ -19,6 +20,7 @@ public class AvatarSelectState : IState
         _player = player;
         _trialManager = trialManager;
         _trialInfo = trialInfo;
+        _cam = vrPlayer.GetComponentInChildren<Camera>()?.transform;
     }
 
     public void OnStateEnter()
@@ -62,6 +64,7 @@ public class AvatarSelectState : IState
             // check if we matched the right or left and save the opposing avatars level of match.
             var choseLeft = chosenAvatar.QuestionnaireMatch == leftLofM;
             _response.levelOfMatchOther = choseLeft? rightLofM : leftLofM;
+            _response.wasLeftMatch = choseLeft;
             
             // check if we selected the same avatar as before if there is one.
             _response.keptSameAvatar = _trialManager.companion != null && _trialManager.companion.QuestionnaireMatch == chosenAvatar.QuestionnaireMatch;
@@ -71,7 +74,26 @@ public class AvatarSelectState : IState
         }
     }
 
-    public void Tick() { }
+    public void Tick()
+    {
+        if (_cam == null) return;
+        
+        if(Physics.Raycast(new(_cam.position, _cam.forward), out var hit))
+        {
+            if(hit.collider.CompareTag("Avatar"))
+            {
+                var avatar = hit.collider.GetComponent<Avatar>();
+                var avatarField = _player.currentField as AvatarField;
+                var leftLoD = avatarField!.leftOption.questionnaireMatch;
+                var rightLoD = avatarField!.rightOption.questionnaireMatch;
+                
+                if (avatar.QuestionnaireMatch == leftLoD)
+                    _response.LookedAtLeftThisFrame();
+                else if (avatar.QuestionnaireMatch == rightLoD)
+                    _response.LookedAtRightThisFrame();
+            }
+        }
+    }
 
     public void OnStateExit()
     {

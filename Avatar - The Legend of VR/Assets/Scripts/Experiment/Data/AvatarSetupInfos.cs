@@ -21,7 +21,7 @@ public enum LevelOfMatch
     FullMatch
 }
 
-public class AvatarSelectionResponse : ISnapshotable
+public class AvatarSelectionResponse
 {
     private float _startTime;
     private float _endTime;
@@ -31,6 +31,19 @@ public class AvatarSelectionResponse : ISnapshotable
     public float ThinkingTime => _endTime - _startTime;
     public bool keptSameAvatar;
 
+    private float _timeLookedAtLeft, _timeLookedAtRight;
+
+    public void LookedAtRightThisFrame() {
+        _timeLookedAtRight += Time.deltaTime;
+    }
+    public void LookedAtLeftThisFrame() {
+        _timeLookedAtLeft += Time.deltaTime;
+    }
+
+    public bool wasLeftMatch;
+
+    public float TimeLookedAtMatch => wasLeftMatch ? _timeLookedAtLeft : _timeLookedAtRight;
+    public float TimeLookedAtOther => !wasLeftMatch ? _timeLookedAtLeft : _timeLookedAtRight;
 
     public void StartTimer() => _startTime = Time.time;
     public void EndTimer() => _endTime = Time.time;
@@ -40,6 +53,8 @@ public class AvatarSelectionResponse : ISnapshotable
             levelOfMatchChosen,
             levelOfMatchOther,
             ThinkingTime,
+            TimeLookedAtMatch,
+            TimeLookedAtOther,
             keptSameAvatar);
     }
 
@@ -49,6 +64,8 @@ public class AvatarSelectionResponse : ISnapshotable
             new(nameof(levelOfMatchChosen), levelOfMatchChosen.GetType()),
             new(nameof(levelOfMatchOther), levelOfMatchOther.GetType()),
             new(nameof(ThinkingTime), ThinkingTime.GetType()),
+            new(nameof(TimeLookedAtMatch), TimeLookedAtMatch.GetType()),
+            new(nameof(TimeLookedAtOther), TimeLookedAtOther.GetType()),
             new(nameof(keptSameAvatar), keptSameAvatar.GetType()));
     }
 }

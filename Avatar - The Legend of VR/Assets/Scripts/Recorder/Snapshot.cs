@@ -4,15 +4,16 @@ using UnityEngine;
 
 public static class Snapshot
 {
-    public static void TakeCSVSnapshot(string filePath, params ISnapshotable[] snaps)
+    public static void TakeCSVSnapshot(string filePath, ISnapshotable snaps)
     {
         using var writer = new StreamWriter(Path.Join(Application.streamingAssetsPath, filePath));
         
-        var headers = snaps.SelectMany(snap => snap.Header());
-        var headerAsCsv = string.Join(",", headers);
+        var headerAsCsv = string.Join(",", snaps.Header());
         writer.WriteLine(headerAsCsv);
-        var records = snaps.SelectMany(snap => snap.Record());
-        var recordsAsCsv = string.Join(",", records);
-        writer.WriteLine(recordsAsCsv);
+        foreach (var recs in snaps.Record())
+        {
+            var recordsAsCsv = string.Join(",", recs);
+            writer.WriteLine(recordsAsCsv);
+        }
     }
 }

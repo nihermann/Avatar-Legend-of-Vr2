@@ -46,3 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trialSetups:
   - {fileID: 11400000, guid: f16eba00f3211d14685fc5d89c8a8482, type: 2}
+  - {fileID: 11400000, guid: 93b79665094c1be4aab616a57e62f815, type: 2}
+  - {fileID: 11400000, guid: 610e8cc880359234bb4a377ffc704b8f, type: 2}
+  - {fileID: 11400000, guid: 64880aa097d960d44b41d48c2d32e7a2, type: 2}
+  - {fileID: 11400000, guid: df09c483b50e49548878bc2a372580cd, type: 2}
+  - {fileID: 11400000, guid: b54e6f66c21319f45a5a3b253ffa2cec, type: 2}

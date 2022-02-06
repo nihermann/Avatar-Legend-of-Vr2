@@ -61,7 +61,7 @@ public class Player : MonoBehaviour
         {
             currentPath = FindPath(steps, currentField);
         }
-        catch (NullReferenceException e)
+        catch (NullReferenceException)
         {
             Debug.Log($"No next in {currentPath.Last().name}");
         }

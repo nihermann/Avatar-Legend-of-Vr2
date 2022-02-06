@@ -51,6 +51,11 @@ public class ExperimentController : MonoBehaviour
             _currentTrial--;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
+
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            TransitionToNextScene();
+        }
     }
 
     public static void TransitionToNextScene()

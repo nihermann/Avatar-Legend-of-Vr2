@@ -1,8 +1,4 @@
 using System.Linq;
-using UnityEngine;
-using UnityEngine.UI;
-using Unity.VisualScripting;
-using UnityEngine;
 
 public class MovePlayerState : IState
 {
@@ -33,8 +29,8 @@ public class MovePlayerState : IState
 
     public void OnStateEnter()
     {
-        _c = false;
-        _s = PlayerState.NotDone;
+        // _c = false;
+        // _s = PlayerState.NotDone;
         _companionExitedMove = false;
         _movementState = PlayerState.NotDone;
         var previouslySelectedCard = _currentTrial.cardsPicked.Last();
@@ -60,9 +56,9 @@ public class MovePlayerState : IState
 
     private void OnAvatarSelectReached() => _movementState = PlayerState.ReachedAvatarSelection;
 
-    private bool _c;
-    private PlayerState _s;
-    private int _i;
+    // private bool _c;
+    // private PlayerState _s;
+    // private int _i;
     public void Tick()
     {
         // if (_s != _movementState)

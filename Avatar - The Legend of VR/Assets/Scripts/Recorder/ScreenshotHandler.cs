@@ -1,14 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 #if UNITY_EDITOR
+using System;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
  
-public class ScreenshotHandler: MonoBehaviour
+public class ScreenshotHandler : MonoBehaviour
 {
     public Camera myCamera;
     private static ScreenshotHandler instance;

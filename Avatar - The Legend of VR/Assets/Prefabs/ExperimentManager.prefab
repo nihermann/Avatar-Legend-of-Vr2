@@ -46,4 +46,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trialSetups:
   - {fileID: 11400000, guid: f16eba00f3211d14685fc5d89c8a8482, type: 2}
-  - {fileID: 11400000, guid: 93b79665094c1be4aab616a57e62f815, type: 2}

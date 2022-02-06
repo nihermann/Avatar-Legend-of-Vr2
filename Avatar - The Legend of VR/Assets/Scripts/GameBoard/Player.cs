@@ -8,8 +8,6 @@ using UnityEngine.Events;
 public class Player : MonoBehaviour
 {
     // Start is called before the first frame update
-    public bool isMoving;
-
     public Field startingField;
 
     public Field currentField;
@@ -58,8 +56,6 @@ public class Player : MonoBehaviour
 
     public void Move(int steps)
     {
-        if(isMoving)
-            return;
 
         try
         {

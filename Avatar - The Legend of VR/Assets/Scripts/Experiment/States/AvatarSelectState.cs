@@ -1,4 +1,5 @@
 using UnityEngine;
+using Valve.VR.Extras;
 using VRAvatar;
 
 public class AvatarSelectState : IState
@@ -26,21 +27,37 @@ public class AvatarSelectState : IState
         _response = new();
         _response.StartTimer();
         _vrPlayer.rightHand.laserPointer.onPointerClick.AddListener(OnAvatarSelected);
+        _vrPlayer.rightHand.laserPointer.onAvatarHovered.AddListener(ChangePointerColorOnHover);
         _vrPlayer.rightHand.laserPointer.LaserPointerEnabled = true;
     }
+
+    private void ChangePointerColorOnHover(Avatar avatar, SteamVR_LaserPointer laserPointer)
+    {
+        var avatarField = _player.currentField as AvatarField;
+        var leftLoD = avatarField!.leftOption.questionnaireMatch;
+        var rightLoD = avatarField!.rightOption.questionnaireMatch;
+        if(avatar.QuestionnaireMatch == leftLoD || avatar.QuestionnaireMatch == rightLoD)
+            laserPointer.color = Color.blue;
+    }
+    
 
     private void OnAvatarSelected(GameObject go)
     {
         if (go.CompareTag("Avatar"))
         {
             var chosenAvatar = go.GetComponent<Avatar>();
-            // save the match level of chosen avatar
-            _response.levelOfMatchChosen = chosenAvatar.QuestionnaireMatch;
-            
+
             // get both level of matches from each avatar
             var avatarField = _player.currentField as AvatarField;
             var leftLofM = avatarField!.leftOption.questionnaireMatch;
             var rightLofM = avatarField!.rightOption.questionnaireMatch;
+
+            // if avatar was shot which is not a current option
+            if (chosenAvatar.QuestionnaireMatch != leftLofM && chosenAvatar.QuestionnaireMatch != rightLofM)
+                return;
+            
+            // save the match level of chosen avatar
+            _response.levelOfMatchChosen = chosenAvatar.QuestionnaireMatch;
 
             // check if we matched the right or left and save the opposing avatars level of match.
             var choseLeft = chosenAvatar.QuestionnaireMatch == leftLofM;
@@ -60,6 +77,8 @@ public class AvatarSelectState : IState
     {
         _vrPlayer.rightHand.laserPointer.LaserPointerEnabled = false;
         _vrPlayer.rightHand.laserPointer.onPointerClick.RemoveListener(OnAvatarSelected);
+        _vrPlayer.rightHand.laserPointer.onAvatarHovered.RemoveListener(ChangePointerColorOnHover);
+
         
         // end timer and add the response data to the trial info
         _response.EndTimer();

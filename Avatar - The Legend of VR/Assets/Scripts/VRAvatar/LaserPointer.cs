@@ -24,6 +24,7 @@ public class LaserPointer : MonoBehaviour
     }
 
     public UnityEvent<GameObject> onPointerClick;
+    public UnityEvent<Avatar, SteamVR_LaserPointer> onAvatarHovered;
     private SteamVR_LaserPointer _laserPointer;
 
     private void Start()
@@ -47,7 +48,6 @@ public class LaserPointer : MonoBehaviour
         {
             if (Physics.Raycast(ray, out var hit))
             {
-                Debug.Log(hit.collider.name);
                 onPointerClick?.Invoke(hit.transform.gameObject);
             }
         }
@@ -59,7 +59,7 @@ public class LaserPointer : MonoBehaviour
     {
         if (e.target.CompareTag("Avatar"))
         {
-            _laserPointer.color = Color.blue;
+            onAvatarHovered?.Invoke(e.target.GetComponent<Avatar>(), _laserPointer);
         }        
     }
     

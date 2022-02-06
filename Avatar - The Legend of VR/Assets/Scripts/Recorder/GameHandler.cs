@@ -21,7 +21,9 @@ public class GameHandler : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            #if UNITY_EDITOR
             ScreenshotHandler.TakeScreenshot_Static(width,height, path);
+            #endif
         }
     }
 }

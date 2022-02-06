@@ -57,6 +57,7 @@ public class TrialManager : MonoBehaviour
         // avatar selection --(no more hand cards)--> refill hand cards
         _stateMachine.AddTransition(avatarSelection, refillHandCards, () => avatarSelection.AvatarSelected && vrPlayer.leftHand.handCards.NumberOfCards <= 0);
         
+        _stateMachine.AddAnyTransition(done, () => Input.GetKeyDown(KeyCode.S));
         
         // Start state
         // --()--> refill hand cards

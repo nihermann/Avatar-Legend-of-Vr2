@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public struct ParticipantPreferences : ISnapshotable
+public struct ParticipantPreferences
 {
     public int Age { get; set; }
 

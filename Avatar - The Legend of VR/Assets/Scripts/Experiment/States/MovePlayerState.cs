@@ -20,7 +20,7 @@ public class MovePlayerState : IState
     private bool _companionExitedMove;
     private PlayerState _movementState;
     public bool FinishedMovement => _companionExitedMove && _movementState == PlayerState.FinishedMovement;
-    public bool ReachedGoalField => _companionExitedMove && _movementState == PlayerState.ReachedGoalField;
+    public bool ReachedGoalField => _movementState == PlayerState.ReachedGoalField;
 
     public bool ReachedAvatarSelection => _companionExitedMove && _movementState == PlayerState.ReachedAvatarSelection;
 
@@ -65,17 +65,17 @@ public class MovePlayerState : IState
     private int _i;
     public void Tick()
     {
-        if (_s != _movementState)
-        {
-            _s = _movementState;
-            Debug.Log($"MOVE: {{{_i++:00}}}: {_s}");
-        }
-
-        if (_companionExitedMove)
-        {
-            _c = _companionExitedMove;
-            Debug.Log($"MOVE: {{{_i++:00}}}Comp Move Done: {_c}");
-        }
+        // if (_s != _movementState)
+        // {
+        //     _s = _movementState;
+        //     Debug.Log($"MOVE: {{{_i++:00}}}: {_s}");
+        // }
+        //
+        // if (_companionExitedMove)
+        // {
+        //     _c = _companionExitedMove;
+        //     Debug.Log($"MOVE: {{{_i++:00}}}Comp Move Done: {_c}");
+        // }
     }
 
     public void OnStateExit()

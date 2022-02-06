@@ -25,7 +25,6 @@ public class ExperimentController : MonoBehaviour
     };
 
     [SerializeField] private TrialSetupScriptableObject[] trialSetups;
-
     public ParticipantPreferences Preferences { get; set; } = new();
     public int ParticipantID { get; set; }
     
@@ -35,13 +34,21 @@ public class ExperimentController : MonoBehaviour
     {
         // Singleton pattern with dont destroy on load (lives across scenes) 
         if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
         DontDestroyOnLoad(this);
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.X)) TransitionToNextScene();
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            _currentTrial--;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 
     public static void TransitionToNextScene()

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class RecordState : IState
+﻿public class RecordState : IState
 {
     private readonly TrialInfo _info;
 
@@ -10,8 +8,7 @@ public class RecordState : IState
     }
     public void OnStateEnter()
     {
-        Debug.Log("Done");
-        Snapshot.TakeCSVSnapshot($"{ExperimentController.Instance.ParticipantID}.csv", _info);
+        Snapshot.TakeCSVSnapshot($"{_info.participantID}_{_info.trialNumber}.csv", _info);
         ExperimentController.TransitionToNextScene();
     }
 

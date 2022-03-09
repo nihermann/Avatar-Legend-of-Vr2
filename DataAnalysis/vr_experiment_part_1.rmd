@@ -1,0 +1,199 @@
+---
+title: "Avatar the Legend of VR Analysis"
+output: html_document
+---
+
+
+```{r, include = F}
+library("purrr")
+library("readr")
+library("tidyverse")
+library("dplyr")
+library("ggplot2")
+setwd("D:/NoOneDrive/DataScience/Tools/CSV Tools/")
+```
+
+```{r, include = F}
+data <- read.csv("NewCSV.csv")
+```
+```{r}
+summary(data)
+```
+
+
+```{r}
+wo_prefs <- data %>%
+  select(participantID, trialNumber, ChoiceNo, levelOfMatchChosen, levelOfMatchOther, ThinkingTime, TimeLookedAtMatch, TimeLookedAtOther, keptSameAvatar) %>%
+  filter(levelOfMatchOther != levelOfMatchChosen)
+wo_prefs$levelOfMatchOther <- factor(
+  wo_prefs$levelOfMatchOther, ordered = T,
+  levels = c("Opposite", "LessOpposite", "SlightMatch", "BetterMatch", "FullMatch"))
+wo_prefs$levelOfMatchChosen <- factor(
+  wo_prefs$levelOfMatchChosen, ordered = T,
+  levels = c("Opposite", "LessOpposite", "SlightMatch", "BetterMatch", "FullMatch"))
+wo_prefs$keptSameAvatar <- as.logical(wo_prefs$keptSameAvatar)
+
+wo_prefs <- wo_prefs %>%
+  filter(trialNumber != 5 & participantID != 6) %>%
+  mutate(
+    choiceIdx = trialNumber * 4 + ChoiceNo,
+    chosen_num = case_when(
+      levelOfMatchChosen == "FullMatch" ~ 5,
+      levelOfMatchChosen == "BetterMatch" ~ 4,
+      levelOfMatchChosen == "SlightMatch" ~ 3,
+      levelOfMatchChosen == "LessOpposite" ~ 2,
+      levelOfMatchChosen == "Opposite" ~ 1,
+    ),
+    other_num = case_when(
+      levelOfMatchOther == "FullMatch" ~ 5,
+      levelOfMatchOther == "BetterMatch" ~ 4,
+      levelOfMatchOther == "SlightMatch" ~ 3,
+      levelOfMatchOther == "LessOpposite" ~ 2,
+      levelOfMatchOther == "Opposite" ~ 1,
+    ),
+    distance = as.factor(abs(chosen_num - other_num)),
+    combination = chosen_num + other_num
+  )
+
+```
+```{r}
+summary(wo_prefs)
+```
+## Did response time got faster the more choices they faced?
+```{r}
+wo_prefs %>% nrow %>% cat("before\n")
+time_data <- wo_prefs %>%
+  filter(ThinkingTime < 40)
+time_data %>% nrow %>% cat("after\n")
+
+cat("Correlation between overall choice number and thinking time:", with(time_data, cor(choiceIdx, ThinkingTime)))
+time_data %>%
+        ggplot(aes(choiceIdx, ThinkingTime)) + geom_jitter(size=4, width = .4) +
+  geom_smooth() + ylab("Thinking time") + xlab("Choice number") +
+  theme_light() + theme(text = element_text(size = 24))
+```
+
+```{r}
+summary(time_data)
+```
+
+# Did the response time go down when they kept their character in the following decision?
+```{r}
+time_data %>%
+  ggplot(aes(keptSameAvatar, ThinkingTime, color = keptSameAvatar)) + geom_boxplot() + geom_jitter(width = .2) + theme_light() + guides(color = "none") +
+  ylab("Thinking time") + xlab("Kept the avatar?") + theme(text = element_text(size = 24))
+```
+
+# Were response times faster when character was closer to their liking?
+```{r}
+time_data %>%
+  ggplot(aes(levelOfMatchChosen, ThinkingTime)) + geom_boxplot() + geom_jitter(width = .2) + theme(text = element_text(size = 24))
+```
+
+```{r}
+time_data %>%
+  ggplot(aes(levelOfMatchChosen, TimeLookedAtOther, color = keptSameAvatar)) + geom_boxplot() + geom_jitter(width = .2) +
+  ylim(0, 5) + xlab("LoM Chosen Avatar") + ylab("Time looked at rejected avatar") + labs(color = "Kept the same avatar?") + theme_light() + theme(text = element_text(size = 20))
+```
+
+## Which combinations of choices were present?
+```{r}
+wo_prefs %>%
+  mutate(
+    A = case_when(
+      levelOfMatchChosen < levelOfMatchOther ~ levelOfMatchChosen,
+      TRUE ~ levelOfMatchOther
+    ),
+    B = case_when(
+      levelOfMatchChosen > levelOfMatchOther ~ levelOfMatchChosen,
+      TRUE ~ levelOfMatchOther
+    )
+  ) %>%
+  ggplot(aes(A, B)) + geom_count() + ylab("") + xlab("") + theme_light() + theme(text = element_text(size = 26))
+```
+## How often which level was chosen
+```{r}
+wo_prefs %>%
+  ggplot(aes(levelOfMatchChosen, fill=levelOfMatchChosen)) +
+  geom_bar() + labs(fill="LoM Chosen Avatar") + xlab("LoM Chosen Avatar") +
+  theme_light() + theme(text = element_text(size = 24))
+```
+
+# How often each level was chosen per trial
+```{r}
+wo_prefs %>% mutate(trail=as.factor(trialNumber + 1)) %>%  ggplot(aes(trail, fill=levelOfMatchChosen)) + geom_bar()+ labs(fill="LoM Chosen Avatar") + xlab("Trial number") +
+  theme_light() + theme(text = element_text(size = 24))
+```
+
+# The probability of choosing a specific LoM
+```{r}
+perc_chosen <- function(value){
+  nrow(filter(wo_prefs, levelOfMatchChosen == value))/ nrow(filter(wo_prefs, levelOfMatchChosen == value | levelOfMatchOther == value))
+}
+
+values <- c("Opposite", "LessOpposite", "SlightMatch", "BetterMatch", "FullMatch")
+
+x <- data.frame(
+    LoM=values,
+    Perc=c(perc_chosen("Opposite"),
+            perc_chosen("LessOpposite"),
+            perc_chosen("SlightMatch"),
+            perc_chosen("BetterMatch"),
+            perc_chosen("FullMatch"))
+)
+
+x$LoM <- factor(x$LoM, ordered = T, levels = values)
+
+x %>% ggplot(aes(x=LoM, y=Perc, fill=LoM)) +
+  geom_bar(stat = 'identity') +
+  scale_y_continuous(n.breaks=9, limits = c(0, 0.8)) +
+  theme_light() +
+  xlab("LoM Chosen Avatar") +
+  ylab("Selection Probability") +
+  labs(fill="LoM Match Avatar") +
+  theme(text = element_text(size = 24))
+```
+
+# Probability of keeping an Avatar
+```{r}
+perc_kept <- function(value){
+  wo_prefs %>% filter(levelOfMatchChosen == value & keptSameAvatar) %>% nrow /
+    wo_prefs %>% filter(
+      (levelOfMatchChosen == value | levelOfMatchOther == value) & ChoiceNo != 1
+    ) %>% nrow
+}
+
+values <- c("Opposite", "LessOpposite", "SlightMatch", "BetterMatch", "FullMatch")
+
+x <- data.frame(
+  LoM=values,
+  Perc=c(perc_kept("Opposite"),
+         perc_kept("LessOpposite"),
+         perc_kept("SlightMatch"),
+         perc_kept("BetterMatch"),
+         perc_kept("FullMatch"))
+)
+
+x$LoM <- factor(x$LoM, ordered = T, levels = values)
+
+x %>% ggplot(aes(x=LoM, y=Perc, fill=LoM)) +
+  geom_bar(stat = 'identity') +
+  scale_y_continuous(n.breaks=7, limits = c(0, 0.6)) +
+  theme_light() +
+  xlab("LoM Chosen Avatar") +
+  ylab("Probability of Keeping") +
+  labs(fill="LoM Match Avatar") +
+  theme(text = element_text(size = 24))
+```
+
+# How often the avatar was kept
+```{r}
+wo_prefs %>%
+  filter(keptSameAvatar) %>%
+  ggplot(aes(levelOfMatchChosen, fill = levelOfMatchChosen)) +
+  geom_bar() +
+  theme_light() +
+  xlab("LoM Chosen Avatar") +
+  labs(fill="LoM Match Avatar") +
+  theme(text = element_text(size = 24))
+```

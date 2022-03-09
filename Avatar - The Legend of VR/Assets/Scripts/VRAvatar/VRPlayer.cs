@@ -5,13 +5,18 @@ namespace VRAvatar
 {
 
     /// <summary>
-    /// Script interface to the Player controlled by the participant.
+    /// Script holding relevant references to the VR components of the participant
     /// </summary>
     public class VRPlayer : MonoBehaviour
     {
+        /// <summary>
+        /// Left hand of the VR player.
+        /// </summary>
         public LeftHand leftHand;
+        
+        /// <summary>
+        /// Right hand of the VR player.
+        /// </summary>
         public RightHand rightHand;
-        public SteamVR_Behaviour_Pose leftControllerPose;
-        public SteamVR_Behaviour_Pose rightControllerPose;
     }
 }

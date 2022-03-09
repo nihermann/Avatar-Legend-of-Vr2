@@ -1,18 +1,42 @@
 ﻿using UnityEngine;
 using VRAvatar;
 
+
+/// <summary>
+/// Manages the flow of each trial repeatedly.
+/// </summary>
 public class TrialManager : MonoBehaviour
 {
+    /// <summary>
+    /// The sate machine responsible for the correct transitions between states.
+    /// </summary>
     private readonly StateMachine _stateMachine = new();
     
+    /// <summary>
+    /// The VR logic of the participant.
+    /// </summary>
     [SerializeField] private VRPlayer vrPlayer;
+    /// <summary>
+    /// The game board logic of the player.
+    /// </summary>
     [SerializeField] private Player player;
+    
+    /// <summary>
+    /// Reference to the accompanying Avatar of the participant.
+    /// </summary>
     public Avatar companion;
     
+    /// <summary>
+    /// All relevant information about the current trial. 
+    /// </summary>
     private TrialInfo _currentTrial;
 
+    /// <summary>
+    /// Instantiate the trial, avatars, all states and define their transitions and conditions.
+    /// </summary>
     public void Awake()
     {
+        // Get all relevant information for this new trial.
         _currentTrial = ExperimentController.Instance.InitNewTrial();
         FindObjectOfType<InstantiateAvatars>().Instantiate(_currentTrial.participantPreferences, _currentTrial.avatarSetupInfos);
 
@@ -64,11 +88,9 @@ public class TrialManager : MonoBehaviour
         _stateMachine.SetState(refillHandCards);
     }
 
-    private void Start()
-    {
-        // Other setups which are not related to state machine
-    }
-
+    /// <summary>
+    /// Updates <see cref="StateMachine"/>.
+    /// </summary>
     private void Update() => _stateMachine.Tick();
     
 }

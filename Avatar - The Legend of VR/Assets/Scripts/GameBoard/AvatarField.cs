@@ -7,5 +7,4 @@ public class AvatarField : Field
 {
     public OptionField leftOption = null;
     public OptionField rightOption = null;
-    
 }

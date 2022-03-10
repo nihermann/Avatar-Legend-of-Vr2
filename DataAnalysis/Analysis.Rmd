@@ -1,0 +1,284 @@
+---
+title: "HRI_Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(scales)
+
+# set working directory
+setwd("/home/hannah/Documents/A0_uni/S5/HRI/Data/")
+```
+
+```{r echo = FALSE, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
+# load the data
+data <-list.files(pattern = "*.csv") %>%
+  map_df(~read_csv(.))
+
+post_questionnaire <- read.csv("../Post-Questionnaire.csv")
+```
+
+
+```{r echo = FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+# preprocessing
+# clean up ids
+data$participantID[data$participantID == 3225] <- 2
+data$participantID[data$participantID == 123098] <- 3
+data$participantID[data$participantID == 89345] <- 0
+
+# add choice numbers to trials
+data <- data %>% group_by(participantID, trialNumber) %>% mutate(choice_nb = row_number()-1) %>% ungroup()
+
+# exclude participant 6
+
+# avatar LoM is ordered
+data$levelOfMatchChosen <- factor(data$levelOfMatchChosen, levels=c("Opposite", "LessOpposite", "SlightMatch", "BetterMatch", "FullMatch"), ordered=TRUE)
+data$levelOfMatchOther <- factor(data$levelOfMatchOther, levels=c("Opposite", "LessOpposite", "SlightMatch", "BetterMatch", "FullMatch"), ordered=TRUE)
+data$participantID <- factor(data$participantID)
+
+# cleaning up column names
+names(post_questionnaire) <- c("time", "participantID", "video_games", "avatar_appearance", "selection_based_on", "selection_reason", "clothing style", "clothing color", "hairstyle", "hair color", "remarks")
+# likert scales are factors
+post_questionnaire$video_games <- factor(post_questionnaire$video_games, levels=c("never", "sometimes", "often"), ordered = TRUE)
+post_questionnaire$avatar_appearance <- factor(post_questionnaire$avatar_appearance, levels=c("1", "2", "3", "4", "5"), ordered = TRUE)
+post_questionnaire$selection_based_on <- factor(post_questionnaire$selection_based_on, levels=c("random", "a \"gut feeling\" (\"Bauchgefühl\")", "with reasoning"))
+# post_questionnaire$clothing_style <- factor(post_questionnaire$clothing_style, levels=c("1", "2", "3", "4", "5"), ordered = TRUE)
+# post_questionnaire$clothing_color <- factor(post_questionnaire$clothing_color, levels=c("1", "2", "3", "4", "5"), ordered = TRUE)
+# post_questionnaire$hairstyle <- factor(post_questionnaire$hairstyle, levels=c("1", "2", "3", "4", "5"), ordered = TRUE)
+# post_questionnaire$hair_color <- factor(post_questionnaire$hair_color, levels=c("1", "2", "3", "4", "5"), ordered = TRUE)
+
+post_questionnaire <- post_questionnaire %>% select(-time)
+```
+
+## Post questionnaire
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+p_data <- post_questionnaire
+
+# rating of the avatar appearance
+p_data %>%
+  ggplot()+
+  geom_bar(aes(avatar_appearance, fill=avatar_appearance))+
+  theme_light(base_size=40)+
+  xlab("Appearance rating")+
+  theme(legend.position = "none")+ 
+  scale_fill_discrete(drop=FALSE) +
+  scale_x_discrete(drop=FALSE)
+
+ggsave("AppearanceRating.png", width = 50, height = 30, units = "cm")
+
+# choice based on
+p_data %>%
+  ggplot()+
+  geom_bar(aes(selection_based_on, fill=selection_based_on))+
+  theme_light(base_size=40)+
+  xlab("Avatar selection was")+
+  theme(legend.position = "none")+ 
+          scale_fill_discrete(drop=FALSE) +
+          scale_x_discrete(drop=FALSE)
+
+ggsave("SelectionBasedOn.png", width = 50, height = 30, units = "cm")
+
+
+p_data <- p_data %>% select(c(participantID, `clothing style`, `clothing color`, hairstyle, `hair color`)) %>%
+  pivot_longer(cols = -1, names_to = "type", values_to = "rating")
+
+p_data %>%
+  ggplot(aes(rating, type, fill = type))+
+  geom_boxplot()+
+  theme_light()+
+  xlab("Influence on Avatar Pick")+
+  ylab("Type")+
+  theme(legend.position = "none")
+
+p_data %>% filter(participantID != 6) %>%
+  ggplot(aes(rating, type, fill = type))+
+  geom_boxplot(lwd=2)+
+  theme_light(base_size=40)+
+  xlab("Influence on Avatar Pick")+
+  ylab("")+
+  theme(legend.position = "none",
+        axis.text.y = element_text(c("hairstyle", "hair color", "clothing style", "clothing color")))
+
+ggsave("InfluenceOnAvatarSelection.png", width = 50, height = 30, units = "cm")
+
+```
+
+# Colors - participants choices and mean
+## Skin color
+```{r echo = FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+skin_colors <- data[c("participantID", "SkinColor_r", "SkinColor_g", "SkinColor_b")]
+
+skin_colors <- skin_colors %>% rename(r=SkinColor_r, g=SkinColor_g, b=SkinColor_b) %>% group_by(skin_colors$participantID) %>% unique()
+pal <- rgb(skin_colors$r, skin_colors$g, skin_colors$b)
+plot <- show_col(pal, labels=TRUE, borders = NA)
+print(plot)
+# mean color
+s <- colMeans(skin_colors)
+print(s)
+
+pal <- rgb(s["r"], s["g"], s["b"])
+show_col(pal)
+
+```
+
+## Hair color
+```{r echo = FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+# naming is wrong, actually eye color
+hair_colors <- data[c("participantID", "HairColor_r", "HairColor_g", "HairColor_b")]
+
+hair_colors <- hair_colors %>% rename(r=HairColor_r, g=HairColor_g, b=HairColor_b) %>% group_by(hair_colors$participantID) %>% unique()
+
+pal <- rgb(hair_colors$r, hair_colors$g, hair_colors$b)
+show_col(pal, labels=TRUE, borders = NA)
+
+# mean
+s <- colMeans(hair_colors)
+print(s)
+
+pal <- rgb(s["r"], s["g"], s["b"])
+show_col(pal)
+
+```
+
+## Eye color
+```{r echo = FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+# naming is wrong, actually hair color
+eye_colors <- data[c("participantID", "EyeColor_r", "EyeColor_g", "EyeColor_b")]
+
+eye_colors <- eye_colors %>% rename(r=EyeColor_r, g=EyeColor_g, b=EyeColor_b) %>% group_by(eye_colors$participantID) %>% unique()
+
+pal <- rgb(eye_colors$r, eye_colors$g, eye_colors$b)
+show_col(pal, labels=TRUE, borders = NA)
+
+#show mean
+s <- colMeans(eye_colors)
+print(s)
+
+pal <- rgb(s["r"], s["g"], s["b"])
+show_col(pal)
+
+```
+
+## Favourite color
+```{r echo = FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+favourite_colors <- data[c("participantID", "FavouriteColor_r", "FavouriteColor_g", "FavouriteColor_b")]
+
+favourite_colors <- favourite_colors %>% rename(r=FavouriteColor_r, g=FavouriteColor_g, b=FavouriteColor_b) %>% group_by(favourite_colors$participantID) %>% unique()
+
+pal <- rgb(favourite_colors$r, favourite_colors$g, favourite_colors$b)
+show_col(pal, labels=TRUE, borders = NA)
+
+#show mean
+s <- colMeans(favourite_colors)
+print(s)
+
+pal <- rgb(s["r"], s["g"], s["b"])
+show_col(pal)
+```
+-> 3 participants selected their favourite color twice, participant 1 had to restart and 2 and 6 changed after trial 0. All clearly tried to select the same color again.
+
+# Overview of other preferences - Hair style, clothing style, likes glasses, likes hats
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+data <- data %>% ungroup()
+h <- data %>% select(participantID, HairLength) %>% group_by(participantID) %>% unique()
+h %>%
+  ggplot+
+  geom_bar(aes(x=HairLength))+
+  xlab("Hair style")+
+  theme_light()
+
+h <- data %>% select(participantID, ClothingStyle) %>% group_by(participantID) %>% unique()
+h %>%
+  ggplot+
+  geom_bar(aes(x=ClothingStyle))+
+  xlab("Clothing style")+
+  theme_light()
+
+h <- data %>% select(participantID, LikesGlasses) %>% group_by(participantID) %>% unique()
+h %>%
+  ggplot+
+  geom_bar(aes(x=LikesGlasses))+
+  xlab("Likes glasses")+
+  theme_light()
+
+h <- data %>% select(participantID, LikesHats) %>% group_by(participantID) %>% unique()
+h %>%
+  ggplot+
+  geom_bar(aes(x=LikesHats))+
+  xlab("Likes hats")+
+  theme_light()
+
+#+ theme(text = element_text(size = 24))
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+f <- data %>% select(participantID, trialNumber, levelOfMatchChosen:choice_nb) %>% filter(participantID!=6)
+sum(f$levelOfMatchChosen > f$levelOfMatchOther)/length(f$levelOfMatchChosen)
+
+f <- f %>% mutate(chosenBetter = f$levelOfMatchChosen > f$levelOfMatchOther)
+
+
+
+# plot the ratios for the individual participants
+ratios <- f %>% group_by(participantID)%>% 
+  summarise(n=n(), choiceRatio = sum(chosenBetter)/n)
+
+ratios%>%
+  ggplot()+
+  geom_bar(aes(y=choiceRatio, x=participantID, fill=participantID),
+                    position = "dodge",
+                    stat = "identity")+
+  theme_light(base_size=40)+
+  xlab("Participant ID")+
+  ylab("Probability of Selecting Higher LoM Avatar")+
+  theme(legend.position = "none")
+
+
+ggsave("ChoiceRatios.png", width = 50, height = 30, units = "cm")
+
+ratios <- f %>% group_by(participantID)%>% 
+  summarise(n=n(), choiceRatio = mean(chosenBetter))
+mean(ratios$choiceRatio)
+min(ratios$choiceRatio)
+max(ratios$choiceRatio)
+
+
+```
+
+# Thinking time vs kept avatar
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+d <- data %>% select("participantID", "ThinkingTime", "keptSameAvatar")
+d <- d %>% filter(ThinkingTime <= 40)
+
+s <- d %>% group_by(keptSameAvatar) %>% summarize(mean=mean(ThinkingTime), sd = sd(ThinkingTime))
+x <- d %>% filter(keptSameAvatar==FALSE)
+y <- d %>% filter(keptSameAvatar==TRUE)
+x %>% summarize(mean=mean(ThinkingTime), sd = sd(ThinkingTime))
+y %>% summarize(mean=mean(ThinkingTime), sd = sd(ThinkingTime))
+# paired t-test
+#d
+#r <- d %>% ungroup() %>% t.test(ThinkingTime ~ keptSameAvatar, var.equal = FALSE)
+t.test(x, y, alternative="greater", var.equal = FALSE)
+d %>%
+  ggplot(aes(x=keptSameAvatar, y=ThinkingTime, color=keptSameAvatar))+
+  geom_boxplot(lwd=2)+
+  geom_violin(fill="transparent", outline.type = "both")+
+  geom_point(position=position_jitter(h=0, w=0.3))+
+  theme_light(base_size=40)+
+  xlab("Kept the Avatar")+
+  ylab("Thinking Time")+
+  theme(legend.position = "none")
+  
+  
+
+
+ggsave("ThinkinTimeVsKeptAvatar.png", width = 50, height = 30, units = "cm")
+
+  
+```
+
+
+
